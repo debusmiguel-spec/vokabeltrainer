@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#172033">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<title>English Vocabulary Trainer</title>
+<style>
+:root{--bg:#f4f7fb;--card:#fff;--text:#172033;--muted:#64748b;--accent:#2563eb;--good:#15803d;--bad:#b91c1c;--line:#dbe2ea}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,Arial,sans-serif;background:var(--bg);color:var(--text);padding-bottom:86px}
+header{background:#172033;color:white;padding:calc(18px + env(safe-area-inset-top)) 18px 18px}h1{font-size:22px;margin:0}header p{margin:5px 0 0;color:#cbd5e1;font-size:14px}
+main{max-width:850px;margin:auto;padding:16px}.panel{background:var(--card);border-radius:18px;padding:18px;box-shadow:0 7px 24px #0f172a12}.hidden{display:none!important}
+nav{position:fixed;z-index:10;bottom:0;left:0;right:0;display:flex;overflow-x:auto;background:white;border-top:1px solid var(--line);padding:7px 6px calc(7px + env(safe-area-inset-bottom));gap:3px}
+nav button{min-width:72px;flex:1;background:white;color:var(--text);font-size:11px;padding:8px 5px}
+button{border:0;border-radius:11px;padding:12px 14px;font-weight:700;cursor:pointer}.primary{background:var(--accent);color:#fff}.secondary{background:#e2e8f0}.good{background:#dcfce7;color:#166534}.danger{background:#fee2e2;color:#991b1b}
+input,select{width:100%;padding:13px;border:1px solid #cbd5e1;border-radius:11px;font-size:16px}label{display:block;font-weight:700;margin:13px 0 6px}
+.row{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}.row>*{flex:1;min-width:125px}.word{text-align:center;font-size:34px;font-weight:800;margin:22px 0 10px}.center{text-align:center}.feedback{min-height:30px;text-align:center;font-weight:700;margin:13px}
+.preview{display:block;max-width:200px;max-height:150px;object-fit:contain;margin:12px auto;border-radius:12px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.stat{padding:14px;border:1px solid var(--line);border-radius:12px}.stat strong{display:block;font-size:23px;margin-top:5px}
+.card{min-height:300px;border:1px solid var(--line);border-radius:18px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:22px;box-shadow:0 8px 20px #0f172a10}.card h3{font-size:34px;margin:10px}.card img{max-width:160px;max-height:110px;border-radius:10px}
+.listitem{display:grid;grid-template-columns:55px 1fr auto;gap:10px;align-items:center;border-bottom:1px solid var(--line);padding:10px 0}.thumb{width:52px;height:45px;object-fit:cover;border-radius:8px}.small{font-size:13px;color:var(--muted)}
+.install{width:100%;margin-top:12px;background:#dbeafe;color:#1e40af}
+@media(min-width:700px){body{padding-bottom:0}nav{position:static;max-width:850px;margin:auto;background:transparent;border:0;padding:14px 16px}nav button{font-size:14px;background:#e2e8f0}.grid{grid-template-columns:repeat(5,1fr)}}
+</style>
+</head>
+<body>
+<header><h1>🇬🇧 English Vocabulary Trainer</h1><p>Objektorientiert • Android & PC • offlinefähig</p><button id="installBtn" class="install hidden">📲 App installieren</button></header>
+<nav>
+<button onclick="app.page('learn')">🎓<br>Lernen</button><button onclick="app.page('cards')">🃏<br>Karten</button><button onclick="app.page('add')">➕<br>Neu</button><button onclick="app.page('import')">📥<br>Import</button><button onclick="app.page('list')">📚<br>Wörter</button><button onclick="app.page('stats')">📊<br>Statistik</button>
+</nav>
+<main>
+<section id="learn" class="panel"><h2>Lernen</h2><div id="learnEmpty" class="center hidden">Füge zuerst Vokabeln hinzu.</div><div id="quiz">
+<select id="direction"><option value="en-de">Englisch → Deutsch</option><option value="de-en">Deutsch → Englisch</option></select>
+<img id="quizImg" class="preview hidden"><div id="question" class="word">–</div>
+<div class="row"><button class="secondary" onclick="app.speak()">🔊 Anhören</button><button class="secondary" onclick="app.voice()">🎤 Sprechen</button></div>
+<label>Antwort</label><input id="answer" placeholder="Antwort eingeben …" autocomplete="off">
+<div class="row"><button class="primary" onclick="app.check()">Prüfen</button><button class="secondary" onclick="app.next()">Weiter</button></div><div id="feedback" class="feedback"></div></div></section>
+
+<section id="cards" class="panel hidden"><h2>Karteikarten</h2><div id="cardBox" class="card" onclick="app.flip()"><img id="cardImg" class="hidden"><div id="cardLabel" class="small">Englisch – tippen zum Umdrehen</div><h3 id="cardText">–</h3></div><div class="row"><button class="danger" onclick="app.rate(false)">✗ Nicht gewusst</button><button class="secondary" onclick="app.speakCard()">🔊</button><button class="good" onclick="app.rate(true)">✓ Gewusst</button></div></section>
+
+<section id="add" class="panel hidden"><h2>Vokabel hinzufügen</h2><form id="form"><label>Englisch</label><div class="row"><input id="en" required><button type="button" class="secondary" onclick="app.dictate('en','en-GB')">🎤</button></div><label>Deutsch</label><div class="row"><input id="de" required><button type="button" class="secondary" onclick="app.dictate('de','de-DE')">🎤</button></div><label>Bild (optional)</label><input id="image" type="file" accept="image/*" capture="environment"><img id="preview" class="preview hidden"><button class="primary" style="width:100%;margin-top:15px">Speichern</button></form><div id="msg" class="feedback"></div></section>
+
+<section id="import" class="panel hidden"><h2>CSV importieren</h2><p class="small">Excel-Tabelle als CSV speichern: Spalte A = Englisch, Spalte B = Deutsch.</p><input id="csv" type="file" accept=".csv,text/csv"><button class="primary" style="width:100%;margin-top:12px" onclick="app.importCSV()">Importieren</button><div id="importMsg" class="feedback"></div></section>
+<section id="list" class="panel hidden"><h2>Meine Vokabeln</h2><div id="words"></div></section>
+<section id="stats" class="panel hidden"><h2>Statistik</h2><div class="grid"><div class="stat">Wörter<strong id="sWords">0</strong></div><div class="stat">Richtig<strong id="sRight">0</strong></div><div class="stat">Falsch<strong id="sWrong">0</strong></div><div class="stat">Quote<strong id="sRate">0%</strong></div><div class="stat">Ø Stufe<strong id="sLevel">0</strong></div></div></section>
+</main>
+<script src="app.js"></script>
+</body></html>
